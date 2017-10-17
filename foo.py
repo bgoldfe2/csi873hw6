@@ -6,6 +6,7 @@ Created on Mon Oct 16 20:12:57 2017
 """
 import os
 import numpy as np
+from itertools import islice
 
 def ReadInFiles(path):
     fullData = []
@@ -33,13 +34,31 @@ def ReadTrainingShort(path):
     train1 = np.loadtxt(path + "\\train1s.txt")
     cnt0 = len(train0)
     cnt1 = len(train1)
-    print("counts are for zero" + cnt0 + "and one" +cnt1)
+    print("counts are for zero " + str(cnt0) + " and one " + str(cnt1))
+    my_data = np.asarray(train0)
+    my_data[my_data > 0] = 1
+    np.savetxt('fooout2.txt',my_data,fmt='%1i')
+    tr0sums = my_data.sum(axis=0)
+    print (tr0sums)
+    np.savetxt('fooout.txt',tr0sums,fmt='%1i')
+    
+def ReadInSlice():
+    path2 = 'C:\\Users\\bruce\\Documents\\GMU\\csi873\\hws\\hw6\\data2\\train0.txt'
+    
+    with open(path2) as myfile:
+        head = list(islice(myfile, 2))
+    print (head)
+    
+def Bayes():
+    fooasdf = 2
 
 def main():
+    trnNum = 100
+    tstNum = 50
     dpath = os.getcwd()+'\data3'
-    print (dpath)
+    #print (dpath)
     dataset = ReadInFiles(dpath)
-    print(len(dataset))
+    #print(len(dataset))
     my_data = ReadInOneList(dataset)
     print (my_data.shape)
     print (my_data.shape)
@@ -50,7 +69,8 @@ def main():
 def main2():
     dpath = os.getcwd()+'\data3'
     print (dpath)
-    ReadTrainingShort(dpath)
+    #ReadTrainingShort(dpath)
+    ReadInSlice()
     
     
-main()
+main2()
