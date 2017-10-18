@@ -62,8 +62,22 @@ def Train(trnData,index):
         start = start + index
         end = end + index
     HeatMap(freqList[0,:])
-    np.savetxt('freqout.txt',freqList,fmt='%1i')
+        
+    return freqList
+
+def testData(freqList,testList,trnNum):
     
+    testItem = testList[0,:]
+    print(testItem.shape)
+    print('the number is ',testItem[0])
+    
+    #apply an m-estimate probability
+    nc = freqList[0,0]
+    n = trnNum
+    p = 0.1
+    m = 1
+    m_est = (nc + m*p)/(n + m)
+    print ('m estimate of probability is ',m_est)
     
 def HeatMap(numberIn):
     #heat map to show numbers
@@ -86,15 +100,16 @@ def main():
     #HeatMap(my_data)
     binData = MakeBinary(my_data)  
     
-    Train(binData,trnNum)
+    freqArr = Train(binData,trnNum)
+    np.savetxt('freqout.txt',freqArr,fmt='%1i')
     
-    dataset = ReadInFiles(dpath,'test')
+    dataset2 = ReadInFiles(dpath,'test')
     #print(len(dataset))
-    my_test = ReadInOneList(dataset,trnNum)
+    my_test = ReadInOneList(dataset2,trnNum)
     
     HeatMap(my_test[1,1:785])
     
-    
+    testData(freqArr,my_test,trnNum)
     #HeatMap(my_data)
     #np.savetxt('fooout2.txt',binData,fmt='%1i')
     
