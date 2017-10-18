@@ -36,19 +36,6 @@ def ReadInOneList(fullData,maxRows):
             allData.append(fullData[j][k])
     return np.asarray(allData)
 
-def ReadTrainingShort(path):
-    train0 = np.loadtxt(path + "\\train0s.txt")
-    train1 = np.loadtxt(path + "\\train1s.txt")
-    cnt0 = len(train0)
-    cnt1 = len(train1)
-    print("counts are for zero " + str(cnt0) + " and one " + str(cnt1))
-    my_data = np.asarray(train0)
-    my_data[my_data > 0] = 1
-    np.savetxt('fooout2.txt',my_data,fmt='%1i')
-    tr0sums = my_data.sum(axis=0)
-    print (tr0sums)
-    np.savetxt('fooout.txt',tr0sums,fmt='%1i')
-    
 def MakeBinary(my_data):
     my_data[my_data > 0] = 1
     #HeatMap(my_data)
