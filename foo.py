@@ -75,7 +75,7 @@ def testData(freqList,testList,trnNum,tstNum):
         #HeatMap(testItem[1:785])
         #print(testItem.shape)
         accuracyList[testNum,0] = testItem[0]
-        print('the number is ',testItem[0])
+        #print('the number is ',testItem[0])
         
         # Loop over all the number frequency sets 0-9
         for trainSet in range(0,10):
@@ -124,7 +124,7 @@ def testData(freqList,testList,trnNum,tstNum):
         #print ('the sum of probs is ',sumForTest0)
         winnerWinnerChickenDinner = sumForTest0.argmax()
         accuracyList[testNum,1] = winnerWinnerChickenDinner
-        print('the winner is ',winnerWinnerChickenDinner)
+        #print('the winner is ',winnerWinnerChickenDinner)
         # End the individual test
     return accuracyList
 
@@ -144,15 +144,14 @@ def Output(resultList,index):
         
 def HeatMap(numberIn):
     #heat map to show numbers
-    #plt.matshow(numberIn[0,1:785].reshape(28,28))
     plt.matshow(numberIn.reshape(28,28))
     plt.colorbar()
     plt.show()
 
 def main():
-    trnNum = 50
-    tstNum = 50
-    dpath = os.getcwd()+'\data3'
+    trnNum = 500
+    tstNum = 500
+    dpath = os.getcwd()+'\data2'
     #print (dpath)
     dataset = ReadInFiles(dpath,'train')
     #print(len(dataset))
@@ -172,7 +171,7 @@ def main():
     
     #print('shape of my_test ',my_test.shape)
 
-    HeatMap(my_test[1,1:785])
+    #HeatMap(my_test[1,1:785])
     
     results = testData(freqArr,my_test,trnNum,tstNum)
     #HeatMap(my_data)
