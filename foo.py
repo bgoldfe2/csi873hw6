@@ -7,6 +7,7 @@ Created on Mon Oct 16 20:12:57 2017
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 def ReadInFiles(path,trnORtst):
     fullData = []
@@ -98,6 +99,15 @@ def testData(freqList,testList,trnNum):
     # formula from pg 179 in text for m-estimate probability
     m_est = (nc + m*p)/(n + m)
     print ('m estimate of probability is ',m_est)
+    
+    # The log probability will change the product of the 
+    # probabilities into the sum of probabilities.  The 
+    # probability will be calculated for each training set for
+    # numbers 0-9. The maximum will be taken as the answer.
+    # For the array use numpy log np.log function
+    
+    probNum0 = math.log(m_est)
+    print('the log prob is ',probNum0)
     
 def HeatMap(numberIn):
     #heat map to show numbers
