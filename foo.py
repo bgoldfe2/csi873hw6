@@ -71,43 +71,60 @@ def Train(trnData,index):
 
 def testData(freqList,testList,trnNum):
     
+    # Make an array to hold the probabilities for a test sample
+    probList = np.zeros((10,784))
+    
     # read the first cell to find the number
     testItem = testList[0,:]
     print(testItem.shape)
     print('the number is ',testItem[0])
     
-    # Get the individual cells out of the 784
-    cellval = testList[0,1]
-    print('the cell value is ',cellval)
+    # Loop over all the number frequency sets 0-9
+    for trainSet in range(0,2):
     
-    # apply an m-estimate probability
-    # n is always the trnNum or number of training instances
-    # this is the same for all giving a prior probability
-    # of 1/10 or 0.1, so p=0.1
+        # Loop over all the cell values for the test sample
+        for cell in range(1,785):
+            
+            # Get the individual cells out of the 784 [test,cell]
+            cellVal = testList[0,cell]
+            #print('the cell value is ',cellval)
+            
+            # Get the corresponding frequency value
+            freqVal = freqList[trainSet,cell-1]
+            
+            # apply an m-estimate probability
+            # n is always the trnNum or number of training instances
+            # this is the same for all giving a prior probability
+            # of 1/10 or 0.1, so p=0.1
+            
+            # Get the frequency [number(0-9),cell(0-783)]
+            # The cell value determines the nc, for cellval>0
+            # nc = frequency for cellval=0 nc = trnNum-frequency
+            if cellVal > 0:
+                nc = freqVal
+            else:
+                nc = trnNum - freqVal
+            n = trnNum
+            p = 0.1
+            m = 1  # picked 1 as a first try
+            
+            # formula from pg 179 in text for m-estimate probability
+            m_est = (nc + m*p)/(n + m)
+            #print ('m estimate of probability is ',m_est)
+            
+            # The log probability will change the product of the 
+            # probabilities into the sum of probabilities.  The 
+            # probability will be calculated for each training set for
+            # numbers 0-9. The maximum will be taken as the answer.
+            # For the array use numpy log np.log function
+            logVal = math.log(m_est)
+            probList[trainSet,cell-1] = logVal
+            print('the cellVal, freqVal, nc, logVal ',cellVal, freqVal,nc, logVal )
+    print ('shape of probList ',probList.shape)
+    SumForTest0 = probList.sum(axis=1)
+   
+    print ('the sum of probs is ',SumForTest0)
     
-    # Get the frequency [number(0-9),cell(0-783)]
-    # The cell value determines the nc, for cellval=1
-    # nc = frequency for cellval=0 nc = trnNum-frequency
-    if (cellval == 1):
-        nc = freqList[0,0]
-    else:
-        nc = trnNum - freqList[0,0]
-    n = trnNum
-    p = 0.1
-    m = 1  # picked 1 as a first try
-    
-    # formula from pg 179 in text for m-estimate probability
-    m_est = (nc + m*p)/(n + m)
-    print ('m estimate of probability is ',m_est)
-    
-    # The log probability will change the product of the 
-    # probabilities into the sum of probabilities.  The 
-    # probability will be calculated for each training set for
-    # numbers 0-9. The maximum will be taken as the answer.
-    # For the array use numpy log np.log function
-    
-    probNum0 = math.log(m_est)
-    print('the log prob is ',probNum0)
     
 def HeatMap(numberIn):
     #heat map to show numbers
