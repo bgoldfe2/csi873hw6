@@ -6,7 +6,6 @@ Created on Mon Oct 16 20:12:57 2017
 """
 import os
 import numpy as np
-from itertools import islice
 import matplotlib.pyplot as plt
 
 def ReadInFiles(path,trnORtst):
@@ -26,6 +25,7 @@ def ReadInOneList(fullData,maxRows):
     allData = []
     numFiles = len (fullData)
     for j in range (numFiles):
+        # allows for smaller data set sizes
         numRows = len (fullData[j])
         if (maxRows < numRows):
             numRows = maxRows
@@ -57,6 +57,9 @@ def Train(trnData,index):
     freqList = np.zeros((10,784))
     start = 0
     end = index - 1
+    # to iterate over the numbers 0-9 make range 0,9
+    # this does a vertical count of each column to find
+    # the frequency that a cell is '1' or written in
     for x in range(0,2):
         freqList[x,:] = trnData[start:end,1:785].sum(axis=0)
         start = start + index
@@ -67,15 +70,32 @@ def Train(trnData,index):
 
 def testData(freqList,testList,trnNum):
     
+    # read the first cell to find the number
     testItem = testList[0,:]
     print(testItem.shape)
     print('the number is ',testItem[0])
     
-    #apply an m-estimate probability
-    nc = freqList[0,0]
+    # Get the individual cells out of the 784
+    cellval = testList[0,1]
+    print('the cell value is ',cellval)
+    
+    # apply an m-estimate probability
+    # n is always the trnNum or number of training instances
+    # this is the same for all giving a prior probability
+    # of 1/10 or 0.1, so p=0.1
+    
+    # Get the frequency [number(0-9),cell(0-783)]
+    # The cell value determines the nc, for cellval=1
+    # nc = frequency for cellval=0 nc = trnNum-frequency
+    if (cellval == 1):
+        nc = freqList[0,0]
+    else:
+        nc = trnNum - freqList[0,0]
     n = trnNum
     p = 0.1
-    m = 1
+    m = 1  # picked 1 as a first try
+    
+    # formula from pg 179 in text for m-estimate probability
     m_est = (nc + m*p)/(n + m)
     print ('m estimate of probability is ',m_est)
     
