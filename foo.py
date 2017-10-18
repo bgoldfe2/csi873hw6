@@ -7,23 +7,28 @@ Created on Mon Oct 16 20:12:57 2017
 import os
 import numpy as np
 from itertools import islice
+import matplotlib.pyplot as plt
 
-def ReadInFiles(path):
+def ReadInFiles(path,trnORtst):
     fullData = []
     fnames = os.listdir(path)
     for fname in fnames:
-        data = np.loadtxt(path + "\\" + fname)
-        fullData.append(data)
+        print (fname)
+        if fname.startswith(trnORtst):
+            data = np.loadtxt(path + "\\" + fname)
+            fullData.append(data)
     numFiles = len (fullData)
     print(numFiles)
    
     return fullData
 
-def ReadInOneList(fullData):
+def ReadInOneList(fullData,maxRows):
     allData = []
     numFiles = len (fullData)
     for j in range (numFiles):
         numRows = len (fullData[j])
+        if (maxRows < numRows):
+            numRows = maxRows
     
         for k in range(numRows):
             allData.append(fullData[j][k])
@@ -42,35 +47,57 @@ def ReadTrainingShort(path):
     print (tr0sums)
     np.savetxt('fooout.txt',tr0sums,fmt='%1i')
     
-def ReadInSlice():
-    path2 = 'C:\\Users\\bruce\\Documents\\GMU\\csi873\\hws\\hw6\\data2\\train0.txt'
+def MakeBinary(my_data):
+    my_data[my_data > 0] = 1
+    #HeatMap(my_data)
+    #np.savetxt('fooout.txt',my_data,fmt='%1i')
+    return my_data
+
+def Train(trnData,index):
+    freqList = np.zeros((10,784))
+    start = 0
+    end = index - 1
+    for x in range(0,2):
+        freqList[x,:] = trnData[start:end,1:785].sum(axis=0)
+        start = start + index
+        end = end + index
+    HeatMap(freqList[0,:])
+    np.savetxt('freqout.txt',freqList,fmt='%1i')
     
-    with open(path2) as myfile:
-        head = list(islice(myfile, 2))
-    print (head)
     
-def Bayes():
-    fooasdf = 2
+def HeatMap(numberIn):
+    #heat map to show numbers
+    #plt.matshow(numberIn[0,1:785].reshape(28,28))
+    plt.matshow(numberIn.reshape(28,28))
+    plt.colorbar()
+    plt.show()
 
 def main():
-    trnNum = 100
+    trnNum = 50
     tstNum = 50
     dpath = os.getcwd()+'\data3'
     #print (dpath)
-    dataset = ReadInFiles(dpath)
+    dataset = ReadInFiles(dpath,'train')
     #print(len(dataset))
-    my_data = ReadInOneList(dataset)
-    print (my_data.shape)
-    print (my_data.shape)
-    my_data[my_data > 0] = 1
-    print (my_data)
+    my_data = ReadInOneList(dataset,trnNum)
+    
     np.savetxt('fooout.txt',my_data,fmt='%1i')
     
-def main2():
-    dpath = os.getcwd()+'\data3'
-    print (dpath)
-    #ReadTrainingShort(dpath)
-    ReadInSlice()
+    #HeatMap(my_data)
+    binData = MakeBinary(my_data)  
+    
+    Train(binData,trnNum)
+    
+    dataset = ReadInFiles(dpath,'test')
+    #print(len(dataset))
+    my_test = ReadInOneList(dataset,trnNum)
+    
+    HeatMap(my_test[1,1:785])
     
     
-main2()
+    #HeatMap(my_data)
+    #np.savetxt('fooout2.txt',binData,fmt='%1i')
+    
+    
+    
+main()
